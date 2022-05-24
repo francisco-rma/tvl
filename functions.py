@@ -40,7 +40,7 @@ def population(size, lower_bound, upper_bound, mean, std):
     return talent_sort, talent_index
 
 
-def evolution(talent, time, unlucky_event, lucky_event):
+def evolution(talent, time, unlucky_event, lucky_event, history=False):
 
     rng = default_rng()
 
@@ -50,45 +50,132 @@ def evolution(talent, time, unlucky_event, lucky_event):
 
     np.place(capital[:, 0], mask=np.zeros(len(talent)) == 0, vals=10.0)
 
-    for i in range(time - 1):
-        a = rng.uniform(0.0, 1.0, size=len(talent))
-        b = rng.uniform(0.0, 1.0, size=len(talent))
+    if history:
 
-        arr_source = capital[:, i]
+        # Returns a 2d array where:
+            # The i-th row represent the time evolution of the i-th individual's capital
+            # The j-th column represents the population's capital at the j-th iteration
+            # The element (i, j) represents the capital of the i-th individual at the j-th iteration
 
-        # Upadting capital of those who went through unlucky events:
+        for i in range(time - 1):
+            a = rng.uniform(0.0, 1.0, size=len(talent))
+            b = rng.uniform(0.0, 1.0, size=len(talent))
 
-        unlucky_mask = a < unlucky_event
-        unlucky_vals = np.extract(unlucky_mask, arr_source)
+            arr_source = capital[:, i]
 
-        np.place(capital[:, i + 1], mask=unlucky_mask, vals=unlucky_vals / 2)
+            # Creating logical masks for each scenario:
 
-        # Updating capital of those who went through lucky events AND managed to capitalize:
+                # Scenario 1: individual went through an unlucky event
 
-        lucky_mask = (a >= unlucky_event) & (a < unlucky_event + lucky_event) & (b < talent)
-        lucky_vals = np.extract(lucky_mask, arr_source)
+            unlucky_mask = a < unlucky_event
 
-        np.place(capital[:, i + 1], mask=lucky_mask, vals=lucky_vals * 2)
+                # Scenario 2: individual went through a lucky event and capitalized
 
-        # Upadting capital of those who didn't go through any events OR failed to capitalize:
+            lucky_mask = ((a >= unlucky_event) &
+                          (a < unlucky_event + lucky_event) &
+                          (b < talent)
+                          )
 
-        neutral_mask = ((a >= unlucky_event + lucky_event) |
-                        ((a >= unlucky_event) &
-                        (a < unlucky_event + lucky_event) &
-                        (b > talent))
-                        )
-        neutral_vals = np.extract(neutral_mask, arr_source)
+                # Scenario 3: individual didn't go through any events OR went through a lucky event and failed to capitalize:
 
-        np.place(capital[:, i + 1], mask=neutral_mask, vals=neutral_vals)
+            neutral_mask = ((a >= unlucky_event + lucky_event) |
+                            ((a >= unlucky_event) &
+                            (a < unlucky_event + lucky_event) &
+                            (b > talent))
+                            )
 
-        # Checking if the masks cover the entirey of the source array:
+            # Upadting capital of those in scenario 1:
 
-        full_mask = np.array((unlucky_mask, lucky_mask, neutral_mask))
-        check = np.logical_or.reduce(full_mask)
+            unlucky_vals = np.extract(unlucky_mask, arr_source) / 2
 
-        if np.all(check):
-            pass
-        else:
-            raise ValueError('Failure to update capital')
+            np.place(capital[:, i + 1], mask=unlucky_mask, vals=unlucky_vals)
 
-    return capital
+            # Upadting capital of those in scenario 2:
+
+            lucky_vals = np.extract(lucky_mask, arr_source) * 2
+
+            np.place(capital[:, i + 1], mask=lucky_mask, vals=lucky_vals)
+
+            # Upadting capital of those in scenario 3:
+
+            neutral_vals = np.extract(neutral_mask, arr_source)
+
+            np.place(capital[:, i + 1], mask=neutral_mask, vals=neutral_vals)
+
+            # Checking if the masks cover the entirety of the source array:
+
+            full_mask = np.array((unlucky_mask, lucky_mask, neutral_mask))
+            check = np.logical_or.reduce(full_mask)
+
+            if np.all(check):
+                pass
+            else:
+                raise ValueError('Failure to update capital')
+
+        return capital
+
+    else:
+
+        # Default behavior
+        # Returns a 1d array representing the population's final capital
+
+        iter = 0
+        arr_source = capital[:, 0]
+
+        while iter < time:
+
+            a = rng.uniform(0.0, 1.0, size=len(talent))
+            b = rng.uniform(0.0, 1.0, size=len(talent))
+
+            # Creating logical masks for each scenario:
+
+                # Scenario 1: individual went through an unlucky event
+
+            unlucky_mask = a < unlucky_event
+
+                # Scenario 2: individual went through a lucky event and capitalized
+
+            lucky_mask = ((a >= unlucky_event) &
+                          (a < unlucky_event + lucky_event) &
+                          (b < talent)
+                          )
+
+                # Scenario 3: individual didn't go through any events OR went through a lucky event and failed to capitalize:
+
+            neutral_mask = ((a >= unlucky_event + lucky_event) |
+                            ((a >= unlucky_event) &
+                            (a < unlucky_event + lucky_event) &
+                            (b > talent))
+                            )
+
+            # Upadting capital of those in scenario 1:
+
+            unlucky_vals = np.extract(unlucky_mask, arr_source) / 2
+
+            np.place(arr_source, mask=unlucky_mask, vals=unlucky_vals)
+
+            # Upadting capital of those in scenario 2:
+
+            lucky_vals = np.extract(lucky_mask, arr_source) * 2
+
+            np.place(arr_source, mask=lucky_mask, vals=lucky_vals)
+
+            # Upadting capital of those in scenario 3:
+
+            neutral_vals = np.extract(neutral_mask, arr_source)
+
+            np.place(arr_source, mask=neutral_mask, vals=neutral_vals)
+
+            # Checking if the masks cover the entirety of the source array:
+
+            full_mask = np.array((unlucky_mask, lucky_mask, neutral_mask))
+            check = np.logical_or.reduce(full_mask)
+
+            if np.all(check):
+                pass
+            else:
+                raise ValueError('Failure to update capital')
+
+            iter += 1
+
+    return arr_source

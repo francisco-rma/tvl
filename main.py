@@ -30,7 +30,9 @@ mu, std = 0.6, 0.1
     # t_i: array containing the indices to the unsorted talent array, i.e:
 
         # talent[t_i[0]] is the talent of the first individual of the population
-        # talent[t_i[j-1]] is the talent of the jth individual of the population
+
+        # talent[t_i[j-1]] is the talent of the j-th individual of the population
+
         # talent[t_i[-1]] is the talent of the last individual of the population
 
 talent, t_i = f.population(pop_n, lb, ub, mu, std)
@@ -45,9 +47,7 @@ le = 0.03
 # ue: chance for an individual to go through an unlucky event
 ue = 0.03
 
-cap = f.evolution(talent, iter_n, ue, le)
-
-final_cap = cap[:, iter_n - 1]
+final_cap = f.evolution(talent, iter_n, ue, le)
 
 plt.hist(final_cap, bins=50)
 plt.title('Histogram of the final capital')
