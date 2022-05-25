@@ -1,4 +1,3 @@
-from time import time
 import functions as f
 from matplotlib import pyplot as plt
 import numpy as np
@@ -35,7 +34,7 @@ mu, std = 0.6, 0.1
 
         # talent[t_i[-1]] is the talent of the last individual of the population
 
-talent, t_i = f.population(pop_n, lb, ub, mu, std)
+talent, t_i = f.populate(pop_n, lb, ub, mu, std)
 
 # le: chance for an individual to go through a lucky event
 le = 0.03
@@ -46,26 +45,49 @@ ue = 0.03
 # runs: number of runs to aggregate over
 runs = 10000
 
-# Initialize arrays to hold the capital and the talent for the most succesful individual of each run:
+# Initialize arrays to hold the position and the talent for the most succesful individual of each run:
 
 # mst: Most Successful Talent (talent of the most succesful individual)
-
 mst = np.empty(runs)
 
+# msp: Most Successful Position (final position of the most succesful individual)
+msp = np.empty(runs)
+
+# Create an array to store values of talent and position for those who were overall successful:
+successful = np.zeros((1, 2))
+
+for i in range(runs):
+
+    final_pos = f.evolution(talent, iter_n, ue, le)
+
+    successful_per_run = np.column_stack((talent[final_pos > 0], final_pos[final_pos > 0]))
+
+    successful = np.concatenate((successful, successful_per_run))
+
+    mst[i] = talent[np.argmax(final_pos)]
+
+    msp[i] = np.max(final_pos)
+
 # msc: Most Successful Capital (final capital of the most succesful individual)
+msc = f.cpt_map(msp)
 
-msc = np.empty(runs)
-
-for i in [*range(runs)]:
-
-    final_cap = f.evolution(talent, iter_n, ue, le)
-
-    mst[i] = talent[np.argmax(final_cap)]
-
-    msc[i] = np.max(final_cap)
-
-plt.hist(mst, bins=100)
+plt.hist(successful[1:, 0], bins=100, range=(0, 1))
+plt.title('Histogram of the talent of successful individuals')
+plt.xlabel('Talent')
+plt.ylabel('Number of occurences')
 plt.show()
 
+print('\nMean position of successful individuals: ', np.mean(successful[1:, 1]))
+print('Mean capital of successful individuals: ', np.mean(f.cpt_map(successful[:, 1])))
+print('Mean talent of successful individuals: ', np.mean(successful[1:, 0]))
+
+
+plt.hist(mst, bins=100, range=(0, 1))
+plt.title('Histogram of the talent of the most successful individual')
+plt.xlabel('Talent')
+plt.ylabel('Number of occurences')
+plt.show()
+
+print('\nMean maximum position: ', np.mean(msp))
 print('Mean maximum capital: ', np.mean(msc))
-print('Mean talent: ', np.mean(msc))
+print('Mean associated talent: ', np.mean(mst))
