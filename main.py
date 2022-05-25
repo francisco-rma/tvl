@@ -37,24 +37,35 @@ mu, std = 0.6, 0.1
 
 talent, t_i = f.population(pop_n, lb, ub, mu, std)
 
-plt.hist(talent, bins=50)
-plt.title('Histogram of talent distribution')
-plt.show()
-
 # le: chance for an individual to go through a lucky event
 le = 0.03
 
 # ue: chance for an individual to go through an unlucky event
 ue = 0.03
 
-final_cap = f.evolution(talent, iter_n, ue, le)
+# runs: number of runs to aggregate over
+runs = 10000
 
-plt.hist(final_cap, bins=50)
-plt.title('Histogram of the final capital')
+# Initialize arrays to hold the capital and the talent for the most succesful individual of each run:
+
+# mst: Most Successful Talent (talent of the most succesful individual)
+
+mst = np.empty(runs)
+
+# msc: Most Successful Capital (final capital of the most succesful individual)
+
+msc = np.empty(runs)
+
+for i in [*range(runs)]:
+
+    final_cap = f.evolution(talent, iter_n, ue, le)
+
+    mst[i] = talent[np.argmax(final_cap)]
+
+    msc[i] = np.max(final_cap)
+
+plt.hist(mst, bins=100)
 plt.show()
 
-plt.plot(talent, final_cap)
-plt.title('Final capital vs talent')
-plt.show()
-
-print(np.max(final_cap), talent[np.argmax(final_cap)])
+print('Mean maximum capital: ', np.mean(msc))
+print('Mean talent: ', np.mean(msc))
