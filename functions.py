@@ -44,24 +44,24 @@ def evolution(talent, time, unlucky_event, lucky_event, history=False):
 
     rng = default_rng()
 
-    capital = np.zeros((len(talent), time))
+    pos = np.zeros((len(talent), time))
 
-    # Initializing all individuals to a starting capital of 10.0:
+    # Initializing all individuals to a starting position of 0:
 
-    np.place(capital[:, 0], mask=np.zeros(len(talent)) == 0, vals=10.0)
+    np.place(pos[:, 0], mask=np.zeros(len(talent)) == 0, vals=0)
 
     if history:
 
         # Returns a 2d array where:
-            # The i-th row represent the time evolution of the i-th individual's capital
-            # The j-th column represents the population's capital at the j-th iteration
-            # The element (i, j) represents the capital of the i-th individual at the j-th iteration
+            # The i-th row represent the time evolution of the i-th individual's position
+            # The j-th column represents the population's position at the j-th iteration
+            # The element (i, j) represents the position of the i-th individual at the j-th iteration
 
         for i in range(time - 1):
             a = rng.uniform(0.0, 1.0, size=len(talent))
             b = rng.uniform(0.0, 1.0, size=len(talent))
 
-            arr_source = capital[:, i]
+            arr_source = pos[:, i]
 
             # Creating logical masks for each scenario:
 
@@ -84,23 +84,23 @@ def evolution(talent, time, unlucky_event, lucky_event, history=False):
                             (b > talent))
                             )
 
-            # Upadting capital of those in scenario 1:
+            # Upadting position of those in scenario 1:
 
-            unlucky_vals = np.extract(unlucky_mask, arr_source) / 2
+            unlucky_vals = np.extract(unlucky_mask, arr_source) - 1
 
-            np.place(capital[:, i + 1], mask=unlucky_mask, vals=unlucky_vals)
+            np.place(pos[:, i + 1], mask=unlucky_mask, vals=unlucky_vals)
 
-            # Upadting capital of those in scenario 2:
+            # Upadting position of those in scenario 2:
 
-            lucky_vals = np.extract(lucky_mask, arr_source) * 2
+            lucky_vals = np.extract(lucky_mask, arr_source) + 1
 
-            np.place(capital[:, i + 1], mask=lucky_mask, vals=lucky_vals)
+            np.place(pos[:, i + 1], mask=lucky_mask, vals=lucky_vals)
 
-            # Upadting capital of those in scenario 3:
+            # Upadting position of those in scenario 3:
 
             neutral_vals = np.extract(neutral_mask, arr_source)
 
-            np.place(capital[:, i + 1], mask=neutral_mask, vals=neutral_vals)
+            np.place(pos[:, i + 1], mask=neutral_mask, vals=neutral_vals)
 
             # Checking if the masks cover the entirety of the source array:
 
@@ -110,17 +110,17 @@ def evolution(talent, time, unlucky_event, lucky_event, history=False):
             if np.all(check):
                 pass
             else:
-                raise ValueError('Failure to update capital')
+                raise ValueError('Failure to update position')
 
-        return capital
+        return pos
 
     else:
 
         # Default behavior
-        # Returns a 1d array representing the population's final capital
+        # Returns a 1d array representing the population's final position
 
         iter = 0
-        arr_source = capital[:, 0]
+        arr_source = pos[:, 0]
 
         while iter < time:
 
@@ -148,19 +148,19 @@ def evolution(talent, time, unlucky_event, lucky_event, history=False):
                             (b > talent))
                             )
 
-            # Upadting capital of those in scenario 1:
+            # Upadting position of those in scenario 1:
 
-            unlucky_vals = np.extract(unlucky_mask, arr_source) / 2
+            unlucky_vals = np.extract(unlucky_mask, arr_source) - 1
 
             np.place(arr_source, mask=unlucky_mask, vals=unlucky_vals)
 
-            # Upadting capital of those in scenario 2:
+            # Upadting position of those in scenario 2:
 
-            lucky_vals = np.extract(lucky_mask, arr_source) * 2
+            lucky_vals = np.extract(lucky_mask, arr_source) + 1
 
             np.place(arr_source, mask=lucky_mask, vals=lucky_vals)
 
-            # Upadting capital of those in scenario 3:
+            # Upadting position of those in scenario 3:
 
             neutral_vals = np.extract(neutral_mask, arr_source)
 
@@ -174,7 +174,7 @@ def evolution(talent, time, unlucky_event, lucky_event, history=False):
             if np.all(check):
                 pass
             else:
-                raise ValueError('Failure to update capital')
+                raise ValueError('Failure to update position')
 
             iter += 1
 

@@ -46,26 +46,31 @@ ue = 0.03
 # runs: number of runs to aggregate over
 runs = 10000
 
-# Initialize arrays to hold the capital and the talent for the most succesful individual of each run:
+# Initialize arrays to hold the position and the talent for the most succesful individual of each run:
 
 # mst: Most Successful Talent (talent of the most succesful individual)
 
 mst = np.empty(runs)
 
-# msc: Most Successful Capital (final capital of the most succesful individual)
+# msp: Most Successful Position (final position of the most succesful individual)
 
-msc = np.empty(runs)
+msp = np.empty(runs)
 
 for i in [*range(runs)]:
 
-    final_cap = f.evolution(talent, iter_n, ue, le)
+    final_pos = f.evolution(talent, iter_n, ue, le)
 
-    mst[i] = talent[np.argmax(final_cap)]
+    mst[i] = talent[np.argmax(final_pos)]
 
-    msc[i] = np.max(final_cap)
+    msp[i] = np.max(final_pos)
+
+# msc: Most Successful Capital (final capital of the most succesful individual)
+
+msc = 10 * (2**msp)
 
 plt.hist(mst, bins=100)
 plt.show()
 
-print('Mean maximum capital: ', np.mean(msc))
-print('Mean talent: ', np.mean(msc))
+print('Mean maximum position: ', np.mean(msp))
+print('Mean capital: ', np.mean(msc))
+print('Mean talent: ', np.mean(mst))
