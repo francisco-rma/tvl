@@ -46,7 +46,7 @@ def cpt_map(array: np.ndarray):
 
     return new_arr
 
-def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=False, capital=False):
+def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=False):
     '''If history=False (default behavior), returns a 1d array representing the population's final position.
 
        If history=True, returns a 2d array where:
@@ -64,7 +64,6 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
     np.place(pos[:, 0], mask=np.zeros(len(talent)) == 0, vals=0)
 
     if history:
-
         # Returns a 2d array where:
             # The i-th row represent the time evolution of the i-th individual's position
             # The j-th column represents the population's position at the j-th iteration
@@ -115,30 +114,9 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
 
             np.place(pos[:, i + 1], mask=neutral_mask, vals=neutral_vals)
 
-            # Checking if the masks cover the entirety of the source array:
-
-            full_mask = np.array((unlucky_mask, lucky_mask, neutral_mask))
-            check = np.logical_or.reduce(full_mask)
-
-            if np.all(check):
-                pass
-            else:
-                raise ValueError('Failure to update position')
-
-        if capital:
-            # Returns both the position and the capital arrays
-
-            cpt = cpt_map(pos)
-
-            return pos, cpt
-
-        else:
-            # Default behavior
-            # Returns the position array
-            return pos
+        return pos
 
     else:
-
         # Default behavior
         # Returns a 1d array representing the population's final position
 
@@ -155,10 +133,10 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
                 # Scenario 1: individual went through an unlucky event
             unlucky_mask = a < unlucky_event
 
-                # Scenario 2: individual went through a lucky event and capitalized
+                # Scenario 2: individual went through a lucky event AND capitalized
             lucky_mask = ((a >= unlucky_event) &
                           (a < unlucky_event + lucky_event) &
-                          (b < talent)
+                          (b <= talent)
                           )
 
                 # Scenario 3: individual didn't go through any events OR went through a lucky event and failed to capitalize
@@ -169,39 +147,11 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
                             )
 
             # Upadting position of those in scenario 1:
-            unlucky_vals = np.extract(unlucky_mask, arr_source) - 1
-
-            np.place(arr_source, mask=unlucky_mask, vals=unlucky_vals)
+            arr_source[unlucky_mask] = arr_source[unlucky_mask] - 1
 
             # Upadting position of those in scenario 2:
-            lucky_vals = np.extract(lucky_mask, arr_source) + 1
-
-            np.place(arr_source, mask=lucky_mask, vals=lucky_vals)
-
-            # Upadting position of those in scenario 3:
-            neutral_vals = np.extract(neutral_mask, arr_source)
-
-            np.place(arr_source, mask=neutral_mask, vals=neutral_vals)
-
-            # Checking if the masks cover the entirety of the source array:
-            full_mask = np.array((unlucky_mask, lucky_mask, neutral_mask))
-            check = np.logical_or.reduce(full_mask)
-
-            if np.all(check):
-                pass
-            else:
-                raise ValueError('Failure to update position')
+            arr_source[lucky_mask] = arr_source[lucky_mask] + 1
 
             iter += 1
 
-    if capital:
-        # Returns both position and capital arrays
-
-        cpt = cpt_map(arr_source)
-
-        return arr_source, cpt
-
-    else:
-        # Returns only position array
-
-        return arr_source
+    return arr_source
