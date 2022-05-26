@@ -56,6 +56,7 @@ msp = np.empty(runs)
 # Create an array to store values of talent and position for those who were overall successful:
 successful = np.zeros((1, 2))
 
+# Perform the simulations:
 for i in range(runs):
 
     final_pos = f.evolution(talent, iter_n, ue, le)
