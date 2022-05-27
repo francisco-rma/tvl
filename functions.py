@@ -150,3 +150,31 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
             iter += 1
 
     return arr_source
+
+def many_runs(talent: np.ndarray, time, unlucky_event, lucky_event, runs):
+
+    # Initialize arrays to hold the position and the talent for the most succesful individual of each run:
+
+    # mst: Most Successful Talent (talent of the most succesful individual)
+    mst = np.empty(runs)
+
+    # msp: Most Successful Position (final position of the most succesful individual)
+    msp = np.empty(runs)
+
+    # Create an array to store values of talent and position for those who were overall successful:
+    positive = np.zeros((1, 2))
+
+    # Perform the simulations:
+    for i in range(runs):
+
+        final_pos = evolution(talent, time, unlucky_event, lucky_event)
+
+        positive_per_run = np.column_stack((talent[final_pos > 0], final_pos[final_pos > 0]))
+
+        positive = np.concatenate((positive, positive_per_run))
+
+        mst[i] = talent[np.argmax(final_pos)]
+
+        msp[i] = np.max(final_pos)
+
+    return mst, msp, positive[1:, :]

@@ -22,20 +22,6 @@ lb, ub = 0, 1
 
 mu, std = 0.6, 0.1
 
-# Creating a population with the desired parameters for talent distribution:
-
-    # talent: array containing sorted values of talent
-
-    # t_i: array containing the indices to the unsorted talent array, i.e:
-
-        # talent[t_i[0]] is the talent of the first individual of the population
-
-        # talent[t_i[j-1]] is the talent of the j-th individual of the population
-
-        # talent[t_i[-1]] is the talent of the last individual of the population
-
-talent, t_i = f.populate(pop_n, lb, ub, mu, std)
-
 # le: chance for an individual to go through a lucky event
 le = 0.03
 
@@ -45,50 +31,46 @@ ue = 0.03
 # runs: number of runs to aggregate over
 runs = 10000
 
-# Initialize arrays to hold the position and the talent for the most succesful individual of each run:
+# Creating a population with the desired parameters for talent distribution:
+    # talent: array containing sorted values of talent
 
-# mst: Most Successful Talent (talent of the most succesful individual)
-mst = np.empty(runs)
+    # t_i: array containing the indices to the unsorted talent array, i.e:
+        # talent[t_i[0]] is the talent of the first individual of the population
+        # talent[t_i[j-1]] is the talent of the j-th individual of the population
+        # talent[t_i[-1]] is the talent of the last individual of the population
 
-# msp: Most Successful Position (final position of the most succesful individual)
-msp = np.empty(runs)
+talent, t_i = f.populate(pop_n, lb, ub, mu, std)
 
-# Create an array to store values of talent and position for those who were overall successful:
-successful = np.zeros((1, 2))
+plt.hist(talent, bins=100, range=(0, 1))
+plt.title('Talent distribution')
+plt.xlabel('Talent')
+plt.ylabel('Number of occurences')
+plt.legend(['Pop size: ' + str(pop_n)], loc='upper left')
+plt.show()
 
-# Perform the simulations:
-for i in range(runs):
-
-    final_pos = f.evolution(talent, iter_n, ue, le)
-
-    successful_per_run = np.column_stack((talent[final_pos > 0], final_pos[final_pos > 0]))
-
-    successful = np.concatenate((successful, successful_per_run))
-
-    mst[i] = talent[np.argmax(final_pos)]
-
-    msp[i] = np.max(final_pos)
+# Running the simulations:
+mst, msp, successful = f.many_runs(talent, iter_n, ue, le, runs)
 
 # msc: Most Successful Capital (final capital of the most succesful individual)
 msc = f.cpt_map(msp)
 
-plt.hist(successful[1:, 0], bins=100, range=(0, 1))
+plt.hist(successful[:, 0], bins=100, range=(0, 1))
 plt.title('Histogram of the talent of successful individuals')
 plt.xlabel('Talent')
 plt.ylabel('Number of occurences')
-plt.text(0.0, 80000, 'Iterations: ' + str(iter_n))
+plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
 plt.show()
 
-print('\nMean position of successful individuals: ', np.mean(successful[1:, 1]))
+print('\nMean position of successful individuals: ', np.mean(successful[:, 1]))
 print('Mean capital of successful individuals: ', np.mean(f.cpt_map(successful[:, 1])))
-print('Mean talent of successful individuals: ', np.mean(successful[1:, 0]))
+print('Mean talent of successful individuals: ', np.mean(successful[:, 0]))
 
 
 plt.hist(mst, bins=100, range=(0, 1))
 plt.title('Histogram of the talent of the most successful individual')
 plt.xlabel('Talent')
 plt.ylabel('Number of occurences')
-plt.text(0.0, 400, 'Iterations: ' + str(iter_n))
+plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
 plt.show()
 
 print('\nMean maximum position: ', np.mean(msp))
