@@ -5,21 +5,17 @@ import numpy as np
 np.set_printoptions(precision=3)
 
 # iter_n: number of iterations to go through
-
 iter_n = 80
 
 # pop_n: number of individuals in the popoulation
-
 pop_n = 1000
 
 # lb: lower bound of talent
 # ub: upper bound of talent
-
 lb, ub = 0, 1
 
 # mu: average value of the talent distribution
 # std: standard deviation of the talent distribution
-
 mu, std = 0.6, 0.1
 
 # le: chance for an individual to go through a lucky event

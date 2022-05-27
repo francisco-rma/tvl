@@ -139,7 +139,7 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
                           (b <= talent))
 
                 # Scenario 3: individual didn't go through any events OR went through a lucky event and failed to capitalize.
-                # No mask is neede because no updates are done.
+                # No mask is needed because no updates are done.
 
             # Upadting position of those in scenario 1:
             arr_source[unlucky_mask] = arr_source[unlucky_mask] - 1
