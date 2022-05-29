@@ -10,6 +10,7 @@ matplotlib = "*"
 scikit-learn = "*"
 line-profiler = "*"
 memory-profiler = "*"
+flask = "*"
 
 [dev-packages]
 pylint = "*"
