@@ -4,7 +4,6 @@ import numpy as np
 from numpy.random import default_rng
 from sklearn.preprocessing import scale
 
-
 def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
     '''
     Create a population with the desired parameters for talent distribution:
