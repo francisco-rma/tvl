@@ -27,14 +27,6 @@ ue = 0.03
 # runs: number of runs to aggregate over
 runs = 10000
 
-# Creating a population with the desired parameters for talent distribution:
-    # talent: array containing sorted values of talent
-
-    # t_i: array containing the indices to the unsorted talent array, i.e:
-        # talent[t_i[0]] is the talent of the first individual of the population
-        # talent[t_i[j-1]] is the talent of the j-th individual of the population
-        # talent[t_i[-1]] is the talent of the last individual of the population
-
 talent, t_i = f.populate(pop_n, lb, ub, mu, std)
 
 plt.hist(talent, bins=100, range=(0, 1))

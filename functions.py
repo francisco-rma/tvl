@@ -6,20 +6,19 @@ from sklearn.preprocessing import scale
 
 
 def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
+    '''
+    Create a population with the desired parameters for talent distribution:
+        -size: number of individuals in the population
+        -lower_bound: minimum value of talent distribution
+        -upper_bound: maximum value of talent distribution
+        -mean: average of talent distribution
+        -std: standard deviation of talent distribution
 
-    # size: number of individuals in the population
+    Returns:
 
-    # lb: array containing the lower bound of talent value
-    # lb = np.full(size, lower_bound)
+        -talent: array containing sorted values of talent
 
-    # ub: array containing the upper bound of talent value
-    # ub = np.full(size, upper_bound)
-
-    # mu: array containing the mean of talent distribution
-    # mu = np.full(size, mean)
-
-    # stdev: array containing the standard deviation of talent distribution
-    # stdev = np.full(size, std)
+        -t_i: array containing the indices to the unsorted talent array'''
 
     talent = np.zeros(size)
 
@@ -28,8 +27,6 @@ def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
                                     loc=mean,
                                     scale=std,
                                     size=size)
-
-    # talent = np.random.default_rng().normal(mean, std, size=size)
 
     mean = np.mean(talent)
     std = np.std(talent)
@@ -40,20 +37,29 @@ def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
     return talent_sort, talent_index
 
 def cpt_map(array: np.ndarray):
-    '''Mapping from the position of an individual's random walk to their capital'''
+    '''Mapping from the position of the random walk to capital'''
 
     new_arr = 10 * (2**array)
 
     return new_arr
 
 def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=False):
-    '''If history=False (default behavior), returns a 1d array representing the population's final position.
-
-       If history=True, returns a 2d array where:
-            - The i-th row represent the time evolution of the i-th individual's position
-            - The j-th column represents the population's position at the j-th iteration
-            - The element (i, j) represents the position of the i-th individual at the j-th iteration
     '''
+    Perform the simulation proper:
+        -talent: array containing the sorted talent distribution of the population
+        -time: number of iterations
+        -unlucky_event: chance for an individual to go through an unlucky event
+        -lucky_event: chance for an individual to go through a lucky event
+
+    Returns:
+
+        If history=False:
+            -arr_source: 1d array containing the final positions of each individual
+
+        If history=True:
+            -pos: 2d array containing the positions at each time for each individual
+
+            '''
 
     rng = default_rng()
 
