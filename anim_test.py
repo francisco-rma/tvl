@@ -41,7 +41,6 @@ ax1.set_ylim(-30, 30)
 ax1.set_xlim(0, 1)
 
 def animate(i):
-    global bar 
     # line.set_ydata(positions[:, i])  # update the data.
     bar[i].set_height(positions[:, i])
     return bar
