@@ -11,6 +11,7 @@ scikit-learn = "*"
 line-profiler = "*"
 memory-profiler = "*"
 flask = "*"
+ipympl = "*"
 
 [dev-packages]
 pylint = "*"
