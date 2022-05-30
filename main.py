@@ -6,7 +6,7 @@ import numpy as np
 np.set_printoptions(precision=3)
 
 # iter_n: number of iterations to go through
-iter_n = 80
+iter_n = 500
 
 # pop_n: number of individuals in the popoulation
 pop_n = 1000
@@ -20,10 +20,10 @@ lb, ub = 0, 1
 mu, std = 0.6, 0.1
 
 # le: chance for an individual to go through a lucky event
-le = 0.03
+le = 0.25
 
 # ue: chance for an individual to go through an unlucky event
-ue = 0.03
+ue = 0.25
 
 # runs: number of runs to aggregate over
 runs = 10000
@@ -41,6 +41,7 @@ plt.title('Histogram of the talent of successful individuals')
 plt.xlabel('Talent')
 plt.ylabel('Number of occurences')
 plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
+plt.savefig('successful_individuals')
 plt.show()
 
 print('\nMean position of successful individuals: ', np.mean(successful[:, 1]))
@@ -53,6 +54,7 @@ plt.title('Histogram of the talent of the most successful individual')
 plt.xlabel('Talent')
 plt.ylabel('Number of occurences')
 plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
+plt.savefig('mst')
 plt.show()
 
 print('\nMean maximum position: ', np.mean(msp))
