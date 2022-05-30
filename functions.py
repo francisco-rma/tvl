@@ -62,62 +62,46 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
 
     rng = default_rng()
 
-    pos = np.zeros((len(talent), time))
-
-    # Initializing all individuals to a starting position of 0:
-
-    np.place(pos[:, 0], mask=np.zeros(len(talent)) == 0, vals=0)
-
     if history:
         # Returns a 2d array where:
             # The i-th row represent the time evolution of the i-th individual's position
             # The j-th column represents the population's position at the j-th iteration
             # The element (i, j) represents the position of the i-th individual at the j-th iteration
 
+        pos = np.zeros((len(talent), time))
+
         for i in range(time - 1):
             a = rng.uniform(0.0, 1.0, size=len(talent))
             b = rng.uniform(0.0, 1.0, size=len(talent))
 
-            arr_source = pos[:, i]
-
             # Creating logical masks for each scenario:
 
                 # Scenario 1: individual went through an unlucky event
-
             unlucky_mask = a < unlucky_event
 
-                # Scenario 2: individual went through a lucky event and capitalized
-
+                # Scenario 2: individual went through a lucky event AND capitalized
             lucky_mask = ((a >= unlucky_event) &
                           (a < unlucky_event + lucky_event) &
-                          (b < talent)
-                          )
+                          (b <= talent))
 
-                # Scenario 3: individual didn't go through any events OR went through a lucky event and failed to capitalize:
-
+                # Scenario 3: individual went through no events OR went through a lucky event AND
+                # failed to capitalize
             neutral_mask = ((a >= unlucky_event + lucky_event) |
                             ((a >= unlucky_event) &
-                            (a < unlucky_event + lucky_event) &
-                            (b > talent))
+                             (a < unlucky_event + lucky_event) &
+                             (b > talent))
                             )
 
+            arr_source = pos[:, i]
+
             # Upadting position of those in scenario 1:
-
-            unlucky_vals = np.extract(unlucky_mask, arr_source) - 1
-
-            np.place(pos[:, i + 1], mask=unlucky_mask, vals=unlucky_vals)
+            pos[unlucky_mask, i + 1] = arr_source[unlucky_mask] - 1
 
             # Upadting position of those in scenario 2:
-
-            lucky_vals = np.extract(lucky_mask, arr_source) + 1
-
-            np.place(pos[:, i + 1], mask=lucky_mask, vals=lucky_vals)
+            pos[lucky_mask, i + 1] = arr_source[lucky_mask] + 1
 
             # Upadting position of those in scenario 3:
-
-            neutral_vals = np.extract(neutral_mask, arr_source)
-
-            np.place(pos[:, i + 1], mask=neutral_mask, vals=neutral_vals)
+            pos[neutral_mask, i + 1] = arr_source[neutral_mask]
 
         return pos
 
@@ -126,7 +110,7 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
         # Returns a 1d array representing the population's final position
 
         iter = 0
-        arr_source = pos[:, 0]
+        arr_source = np.zeros(len(talent))
 
         while iter < time:
 
@@ -154,7 +138,7 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
 
             iter += 1
 
-    return arr_source
+        return arr_source
 
 def many_runs(talent: np.ndarray, time, unlucky_event, lucky_event, runs):
 

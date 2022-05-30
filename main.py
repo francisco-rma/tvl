@@ -1,5 +1,6 @@
 import functions as f
 from matplotlib import pyplot as plt
+from matplotlib import animation as an
 import numpy as np
 
 np.set_printoptions(precision=3)
@@ -28,13 +29,6 @@ ue = 0.03
 runs = 10000
 
 talent, t_i = f.populate(pop_n, lb, ub, mu, std)
-
-plt.hist(talent, bins=100, range=(0, 1))
-plt.title('Talent distribution')
-plt.xlabel('Talent')
-plt.ylabel('Number of occurences')
-plt.legend(['Pop size: ' + str(pop_n)], loc='upper left')
-plt.show()
 
 # Running the simulations:
 mst, msp, successful = f.many_runs(talent, iter_n, ue, le, runs)
