@@ -33,24 +33,20 @@ positions = f.evolution(talent, iter_n, ue, le, history=True)
 
 fig1, ax1 = plt.subplots()
 
-# line, = ax1.plot(talent, positions[:, 0], color='r', marker='.', markersize=10, linestyle='none')
+ax1.set_ylim(np.min(positions), np.max(positions))
+ax1.set_xlim(talent.min(), talent.max())
+ax1.set_title('Position distribution')
+ax1.set_xlabel('Talent')
+ax1.set_ylabel('Position')
 
-bar = ax1.bar(talent, positions[:, -0], width=0.001)
+bar = ax1.bar(np.linspace(0, 1, num=1000), positions[:, 0], width=0.001)
 
-ax1.set_ylim(-30, 30)
-ax1.set_xlim(0, 1)
-
-def animate(i):
-    # line.set_ydata(positions[:, i])  # update the data.
-    bar[i].set_height(positions[:, i])
-    return bar
+def bar_animate(i):
+    for b, h in zip(bar, positions[:, i]):
+        b.set_height(h)
+    return
 
 
-ani = animation.FuncAnimation(fig1, animate, frames=iter_n + 1, blit=True, repeat=False)
+ani2 = animation.FuncAnimation(fig1, bar_animate, frames=iter_n + 1, blit=True, repeat=False)
 
-plt.show()
-
-fig2, ax2 = plt.subplots()
-
-ax2.bar(np.linspace(0, 1, num=1000), positions[:, -1], width=0.001)
 plt.show()

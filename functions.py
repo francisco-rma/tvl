@@ -74,8 +74,6 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
             a = rng.uniform(0.0, 1.0, size=len(talent))
             b = rng.uniform(0.0, 1.0, size=len(talent))
 
-            arr_source = pos[:, i]
-
             # Creating logical masks for each scenario:
 
                 # Scenario 1: individual went through an unlucky event
@@ -86,11 +84,24 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
                           (a < unlucky_event + lucky_event) &
                           (b <= talent))
 
+                # Scenario 3: individual went through no events OR went through a lucky event AND
+                # failed to capitalize
+            neutral_mask = ((a >= unlucky_event + lucky_event) |
+                            ((a >= unlucky_event) &
+                             (a < unlucky_event + lucky_event) &
+                             (b > talent))
+                            )
+
+            arr_source = pos[:, i]
+
             # Upadting position of those in scenario 1:
-            pos[unlucky_mask, i + 1] = pos[unlucky_mask, i] - 1
+            pos[unlucky_mask, i + 1] = arr_source[unlucky_mask] - 1
 
             # Upadting position of those in scenario 2:
-            pos[lucky_mask, i + 1] = pos[lucky_mask, i] + 1
+            pos[lucky_mask, i + 1] = arr_source[lucky_mask] + 1
+
+            # Upadting position of those in scenario 3:
+            pos[neutral_mask, i + 1] = arr_source[neutral_mask]
 
         return pos
 
