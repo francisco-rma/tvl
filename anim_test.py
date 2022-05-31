@@ -5,7 +5,7 @@ import numpy as np
 np.set_printoptions(precision=3)
 
 # iter_n: number of iterations to go through
-iter_n = 8000
+iter_n = 800
 
 # pop_n: number of individuals in the popoulation
 pop_n = 1000
@@ -19,10 +19,10 @@ lb, ub = 0, 1
 mu, std = 0.6, 0.1
 
 # le: chance for an individual to go through a lucky event
-le = 0.03
+le = 0.3
 
 # ue: chance for an individual to go through an unlucky event
-ue = 0.03
+ue = 0.3
 
 talent, t_i = f.populate(pop_n, lb, ub, mu, std)
 
@@ -30,7 +30,11 @@ positions = f.evolution(talent, iter_n, ue, le, history=True)
 
 fig1, ax1 = plt.subplots()
 
-ax1.set_facecolor('lavender')
+# Candidate colors:
+# lavender
+# (medium)seagreen
+# darkgray
+ax1.set_facecolor('darkgray')
 
 ax1.set_ylim(np.min(positions), np.max(positions))
 ax1.set_xlim(np.min(talent), np.max(talent))
@@ -49,18 +53,19 @@ bar = ax1.bar(talent,
               alpha=0.5)
 
 # Line plot of <position(time)> x talent:
-line1, = ax1.plot(talent, -0 * le * (np.ones((pop_n)) - talent),
+line1, = ax1.plot(talent, 0 * talent,
                   color='black',
                   linestyle='-',
                   alpha=0.7)
 
 # Scatter of position x talent
-line2, = ax1.plot(talent, -0 * le * (np.ones((pop_n)) - talent),
-                  color='fuchsia',
-                  marker='.',
-                  linestyle='none',
-                  markersize=2,
-                  alpha=0.7)
+scat1 = ax1.scatter(talent, 0 * talent,
+                    s=1,
+                    c=positions[:, 0],
+                    cmap=cm.RdYlGn,
+                    vmin=np.min(positions),
+                    vmax=-np.min(positions),
+                    alpha=0.9)
 
 
 def animate(i):
@@ -68,7 +73,8 @@ def animate(i):
         b.set_height(h)
 
     line1.set_ydata(-i * le * (np.ones((pop_n)) - talent))
-    line2.set_ydata(positions[:, i])
+    scat1.set_offsets(np.c_[talent, positions[:, i]])
+    scat1.set_array(positions[:, i])
     return
 
 
