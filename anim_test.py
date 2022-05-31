@@ -41,10 +41,13 @@ ax1.set_xlim(np.min(talent), np.max(talent))
 ax1.set_title('Position distribution')
 ax1.set_xlabel('Talent')
 ax1.set_ylabel('Position')
+# ax1.text(0.7, np.min(positions), 'Iterations: ' + str(iter_n) + '\nEvent chance: ' + str(ue))
 
 # Plot reference black line at position = 0:
 ref_line, = ax1.plot(talent, np.zeros((len(talent))),
-                     color='black')
+                     color='black',
+                     label='Iterations: ' + str(iter_n) + '\nEvent chance: ' + str(ue))
+ax1.legend()
 
 # Bar plot of position for each individual
 bar = ax1.bar(talent,
