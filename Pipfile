@@ -12,6 +12,7 @@ line-profiler = "*"
 memory-profiler = "*"
 flask = "*"
 ipympl = "*"
+pillow = "*"
 
 [dev-packages]
 pylint = "*"
