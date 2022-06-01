@@ -77,12 +77,12 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
             # Creating logical masks for each scenario:
 
                 # Scenario 1: unlucky event
-            unlucky_mask = (a <= unlucky_event)
+            negative_mask = (a <= unlucky_event)
 
                 # Scenario 2: lucky event AND capitalized
-            lucky_mask = ((a > unlucky_event) &
-                          (a <= unlucky_event + lucky_event) &
-                          (b <= talent))
+            positive_mask = ((a > unlucky_event) &
+                             (a <= unlucky_event + lucky_event) &
+                             (b <= talent))
 
                 # Scenario 3: (no events) OR
                 # (lucky event AND failed to capitalize)
@@ -94,10 +94,10 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
             arr_source = pos[:, i]
 
             # Upadting position of those in scenario 1:
-            pos[unlucky_mask, i + 1] = arr_source[unlucky_mask] - 1
+            pos[negative_mask, i + 1] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            pos[lucky_mask, i + 1] = arr_source[lucky_mask] + 1
+            pos[positive_mask, i + 1] = arr_source[positive_mask] + 1
 
             # Upadting position of those in scenario 3:
             pos[neutral_mask, i + 1] = arr_source[neutral_mask]
@@ -119,22 +119,22 @@ def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=Fals
             # Creating logical masks for each scenario:
 
                 # Scenario 1: unlucky event
-            unlucky_mask = a <= unlucky_event
+            negative_mask = a <= unlucky_event
 
                 # Scenario 2: lucky event AND capitalized
-            lucky_mask = ((a > unlucky_event) &
-                          (a <= unlucky_event + lucky_event) &
-                          (b <= talent))
+            positive_mask = ((a > unlucky_event) &
+                             (a <= unlucky_event + lucky_event) &
+                             (b <= talent))
 
                 # Scenario 3: no events OR
                 # lucky event AND failed to capitalize.
                 # No mask is needed because no updates are done.
 
             # Upadting position of those in scenario 1:
-            arr_source[unlucky_mask] = arr_source[unlucky_mask] - 1
+            arr_source[negative_mask] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            arr_source[lucky_mask] = arr_source[lucky_mask] + 1
+            arr_source[positive_mask] = arr_source[positive_mask] + 1
 
             iter += 1
 
@@ -178,12 +178,12 @@ def symmetric_evolution(talent: np.ndarray, time, unlucky_event, lucky_event, hi
     # Creating logical masks for each scenario:
 
                 # Scenario 1: unlucky event AND didn't escape
-            unlucky_mask = (a <= unlucky_event) & (b > talent)
+            negative_mask = (a <= unlucky_event) & (b > talent)
 
                 # Scenario 2: lucky event AND capitalized
-            lucky_mask = ((a > unlucky_event) &
-                          (a <= unlucky_event + lucky_event) &
-                          (b <= talent))
+            positive_mask = ((a > unlucky_event) &
+                             (a <= unlucky_event + lucky_event) &
+                             (b <= talent))
 
                 # Scenario 3: (no events) OR
                             # (lucky event AND failed to capitalize) OR
@@ -198,10 +198,10 @@ def symmetric_evolution(talent: np.ndarray, time, unlucky_event, lucky_event, hi
             arr_source = pos[:, i]
 
             # Upadting position of those in scenario 1:
-            pos[unlucky_mask, i + 1] = arr_source[unlucky_mask] - 1
+            pos[negative_mask, i + 1] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            pos[lucky_mask, i + 1] = arr_source[lucky_mask] + 1
+            pos[positive_mask, i + 1] = arr_source[positive_mask] + 1
 
             # Upadting position of those in scenario 3:
             pos[neutral_mask, i + 1] = arr_source[neutral_mask]
@@ -223,12 +223,12 @@ def symmetric_evolution(talent: np.ndarray, time, unlucky_event, lucky_event, hi
             # Creating logical masks for each scenario:
 
                 # Scenario 1: unlucky event AND didn't escape
-            unlucky_mask = (a <= unlucky_event) & (b > talent)
+            negative_mask = (a <= unlucky_event) & (b > talent)
 
                 # Scenario 2: lucky event AND capitalized
-            lucky_mask = ((a > unlucky_event) &
-                          (a <= unlucky_event + lucky_event) &
-                          (b <= talent))
+            positive_mask = ((a > unlucky_event) &
+                             (a <= unlucky_event + lucky_event) &
+                             (b <= talent))
 
                 # Scenario 3: (no events) OR
                             # (lucky event AND failed to capitalize) OR
@@ -236,10 +236,10 @@ def symmetric_evolution(talent: np.ndarray, time, unlucky_event, lucky_event, hi
                 # No mask is needed because no updates are done.
 
             # Upadting position of those in scenario 1:
-            arr_source[unlucky_mask] = arr_source[unlucky_mask] - 1
+            arr_source[negative_mask] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            arr_source[lucky_mask] = arr_source[lucky_mask] + 1
+            arr_source[positive_mask] = arr_source[positive_mask] + 1
 
             iter += 1
 
