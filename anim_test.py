@@ -26,7 +26,7 @@ ue = 0.3
 
 talent, t_i = f.populate(pop_n, lb, ub, mu, std)
 
-positions = f.evolution(talent, iter_n, ue, le, history=True)
+positions = f.tvl(talent, iter_n, ue, le, history=True)
 
 fig1, ax1 = plt.subplots()
 
