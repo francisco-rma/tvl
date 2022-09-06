@@ -236,6 +236,7 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
         return
 
     side = int(side)
+    talent = np.reshape(talent, (side, side))
 
     if history:
         # Returns a 2d array where:
@@ -244,11 +245,14 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
             # The element (i, j) represents the position of the i-th individual at the j-th iteration
 
         pos = np.zeros((time, side, side))
-        print(pos)
+        # print(pos)
 
         for i in range(time - 1):
-            a = rng.uniform(0.0, 1.0, size=len(talent))
-            b = rng.uniform(0.0, 1.0, size=len(talent))
+            a = rng.uniform(0.0, 1.0, size=n)
+            a = np.reshape(a, (side, side))
+
+            b = rng.uniform(0.0, 1.0, size=n)
+            b = np.reshape(b, (side, side))
 
             # Creating logical masks for each scenario:
 
@@ -259,7 +263,6 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
             positive_mask = ((a > unlucky_event) &
                              (a <= unlucky_event + lucky_event) &
                              (b <= talent))
-
                 # Scenario 3: no events OR
                             # lucky event AND failed to capitalize
             neutral_mask = ((a > unlucky_event + lucky_event) |
@@ -267,16 +270,23 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
                              (a <= unlucky_event + lucky_event) &
                              (b > talent)))
 
-            arr_source = pos[:, i]
+            arr_source = pos[i, :, :]
 
             # Upadting position of those in scenario 1:
-            pos[negative_mask, i + 1] = arr_source[negative_mask] - 1
+            pos[i + 1, negative_mask] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            pos[positive_mask, i + 1] = arr_source[positive_mask] + 1
+            pos[i + 1, positive_mask] = arr_source[positive_mask] + 1
 
             # Upadting position of those in scenario 3:
-            pos[neutral_mask, i + 1] = arr_source[neutral_mask]
+            pos[i + 1, neutral_mask] = arr_source[neutral_mask]
+
+            print(i)
+            print(pos[i, :, :])
+            print(negative_mask)
+            print(positive_mask)
+            print(neutral_mask)
+            print(pos[i + 1, :, :])
 
         return pos
 
