@@ -41,7 +41,6 @@ ax1.set_xlim(np.min(talent), np.max(talent))
 ax1.set_title('Position distribution')
 ax1.set_xlabel('Talent')
 ax1.set_ylabel('Position')
-# ax1.text(0.7, np.min(positions), 'Iterations: ' + str(iter_n) + '\nEvent chance: ' + str(ue))
 
 # Plot reference black line at position = 0:
 ref_line, = ax1.plot(talent, np.zeros((len(talent))),
@@ -75,7 +74,8 @@ def animate(i):
     for b, h in zip(bar, positions[:, i]):
         b.set_height(h)
 
-    line1.set_ydata(-i * le * (np.ones((pop_n)) - talent))
+    line1.set_ydata(i * le * (talent - np.ones(talent.shape)))
+
     scat1.set_offsets(np.c_[talent, positions[:, i]])
     scat1.set_array(positions[:, i])
     return
