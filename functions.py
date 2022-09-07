@@ -3,6 +3,7 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import default_rng
+import pandas as pd
 
 def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
     '''
@@ -226,7 +227,15 @@ def list_neighbours(lattice: np.ndarray, list_neighbour: np.ndarray, periodic_co
 
     return list_neighbour
 
-def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, history=True):
+def interactive_tvl(talent: np.ndarray, time: int, unlucky_event, lucky_event, history=True):
+    '''
+    - talent: 1-dimensional array containing the value of talent for each indiviudal of the simulation
+    - time: integer that represents the number of iterations of the simulation
+    - unlucky_event: real number that represents the probability of an idividual going through an unlucky event
+    - lucky_event: real number that represents the probability of an idividual going through an lucky event
+    - history:  boolean that determines whether or not the return should contain the entire history of the simulation or just the final state
+                specifically, if history is true, the return will be a 3-dimensional array containing, along its x-axis
+    '''
     rng = default_rng()
     n = len(talent)
     side = np.sqrt(n)
@@ -244,7 +253,7 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
             # The j-th column represents the population's position at the j-th iteration
             # The element (i, j) represents the position of the i-th individual at the j-th iteration
 
-        pos = np.zeros((time, side, side))
+        pos = np.zeros((side, side, time))
         # print(pos)
 
         for i in range(time - 1):
@@ -270,23 +279,33 @@ def interactive_tvl(talent: np.ndarray, time, unlucky_event, lucky_event, histor
                              (a <= unlucky_event + lucky_event) &
                              (b > talent)))
 
-            arr_source = pos[i, :, :]
+            arr_source = pos[:, :, i]
+
+            initial_pos_df = pd.DataFrame(pos[:, :, i])
 
             # Upadting position of those in scenario 1:
-            pos[i + 1, negative_mask] = arr_source[negative_mask] - 1
+            pos[negative_mask, i + 1] = arr_source[negative_mask] - 1
 
             # Upadting position of those in scenario 2:
-            pos[i + 1, positive_mask] = arr_source[positive_mask] + 1
+            pos[positive_mask, i + 1] = arr_source[positive_mask] + 1
 
             # Upadting position of those in scenario 3:
-            pos[i + 1, neutral_mask] = arr_source[neutral_mask]
+            pos[neutral_mask, i + 1] = arr_source[neutral_mask]
 
-            print(i)
-            print(pos[i, :, :])
-            print(negative_mask)
-            print(positive_mask)
-            print(neutral_mask)
-            print(pos[i + 1, :, :])
+            final_pos_df = pd.DataFrame(pos[:, :, i + 1])
+            negative_mask_df = pd.DataFrame(negative_mask)
+            positive_mask_df = pd.DataFrame(positive_mask)
+            neutral_mask_df = pd.DataFrame(neutral_mask)
+
+            print(f"Iteracão de número: {i}")
+            print("Máscara negativa")
+            print(negative_mask_df)
+            print("Máscara positiva")
+            print(positive_mask_df)
+            print("Máscara neutra")
+            print(neutral_mask_df)
+            print(initial_pos_df)
+            print(final_pos_df)
 
         return pos
 

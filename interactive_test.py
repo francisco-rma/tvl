@@ -10,7 +10,7 @@ np.set_printoptions(precision=3)
 iter_n = 10
 
 # pop_n: number of individuals in the popoulation
-pop_n = 4**2
+pop_n = 2**2
 
 # lb: lower bound of talent
 # ub: upper bound of talent
