@@ -245,7 +245,7 @@ def symmetric_evolution(talent: np.ndarray, time, unlucky_event, lucky_event, hi
 
         return arr_source
 
-def many_runs(talent: np.ndarray, time: int, unlucky_event: float, lucky_event: float, runs: int, symmetricEvolution: bool = False):
+def many_runs(talent: np.ndarray, time: int, unlucky_event: float, lucky_event: float, runs: int):
 
     # Initialize arrays to hold the position and the talent for the most succesful individual of each run:
 
@@ -259,7 +259,7 @@ def many_runs(talent: np.ndarray, time: int, unlucky_event: float, lucky_event: 
     positive = np.zeros((1, 2))
 
     # Perform the simulations:
-    if symmetricEvolution:
+    if sym:
 
         for i in range(runs):
 
@@ -279,7 +279,8 @@ def many_runs(talent: np.ndarray, time: int, unlucky_event: float, lucky_event: 
 
         for i in range(runs):
 
-            final_pos = tvl(talent, time, unlucky_event, lucky_event)
+        final_pos = tvl(talent, time, unlucky_event, lucky_event)
+
 
             positive_per_run = np.column_stack((talent[final_pos > 0], final_pos[final_pos > 0]))
 
