@@ -12,7 +12,6 @@ root = customtkinter.CTk()
 root.geometry("500x300")
 
 
-
 def login():
     np.set_printoptions(precision=3)
 
@@ -57,8 +56,10 @@ def login():
     plt.savefig('successful_individuals')
     plt.show()
 
-    print('\nMean position of successful individuals: ', np.mean(successful[:, 1]))
-    print('Mean capital of successful individuals: ', np.mean(tvl.mapToCapital(successful[:, 1])))
+    print('\nMean position of successful individuals: ',
+          np.mean(successful[:, 1]))
+    print('Mean capital of successful individuals: ',
+          np.mean(tvl.mapToCapital(successful[:, 1])))
     print('Mean talent of successful individuals: ', np.mean(successful[:, 0]))
 
     plt.clf()
@@ -75,20 +76,23 @@ def login():
     print('Mean maximum capital: ', np.mean(msc))
     print('Mean associated talent: ', np.mean(mst))
 
+
 frame = customtkinter.CTkFrame(master=root)
 frame.pack(pady=20, padx=50, fill="both", expand=True)
 
 label = customtkinter.CTkLabel(master=frame, text="Hello World")
 label.pack(pady=12, padx=10)
 
-entry1 = customtkinter.CTkEntry(master=frame, placeholder_text ='Username')
+entry1 = customtkinter.CTkEntry(master=frame, placeholder_text='Username')
 entry1.pack(pady=12, padx=10)
 
-entry2 = customtkinter.CTkEntry(master=frame, placeholder_text ='Password', show='*')
+entry2 = customtkinter.CTkEntry(
+    master=frame, placeholder_text='Password', show='*')
 entry2.pack(pady=12, padx=10)
 
 
-button = customtkinter.CTkButton(master=frame, text = 'TvL - Many runs', command=login)
+button = customtkinter.CTkButton(
+    master=frame, text='TvL - Many runs', command=login)
 button.pack(pady=12, padx=10)
 
 
