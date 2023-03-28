@@ -1,4 +1,4 @@
-import functions as f
+import src.functions.core as f
 from matplotlib import pyplot as plt
 from matplotlib import animation as an
 import numpy as np

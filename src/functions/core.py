@@ -35,15 +35,19 @@ def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
     return talent_sort, talent_index
 
 
-def mapToCapital(array: np.ndarray):
+def mapToCapital(array: np.ndarray, func):
     '''Mapping from the position of the random walk to capital'''
 
-    new_arr = 10 * (2**array)
+    if func is not None:
+        new_arr = func(array)
+
+    else:
+        new_arr = 10 * (2**array)
 
     return new_arr
 
 
-def tvl(talent: np.ndarray, time, unlucky_event, lucky_event, history=False):
+def evolution(talent: np.ndarray, time, unlucky_event, lucky_event, history=False):
     '''
     Perform the simulation proper:
         -talent: array containing the sorted talent distribution of the population
@@ -286,7 +290,7 @@ def many_runs(talent: np.ndarray, time: int, unlucky_event: float, lucky_event: 
 
         for i in range(runs):
 
-            final_pos = tvl(talent, time, unlucky_event, lucky_event)
+            final_pos = evolution(talent, time, unlucky_event, lucky_event)
 
             positive_per_run = np.column_stack(
                 (talent[final_pos > 0], final_pos[final_pos > 0]))
