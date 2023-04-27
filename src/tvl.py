@@ -100,14 +100,18 @@ class tvl():
         # plt.savefig('successful_individuals')
         # plt.show()
 
-        plt.bar(x=self.talent, height=final_pos[self.iter_n])
+        # plt.plot(self.talent, final_pos)
+        # plt.bar(x=self.talent, height=final_pos, width=0.01)
+        plt.scatter(x=self.talent, y=final_pos)
         plt.title('Final distribution')
         plt.xlim(right=self.ub, left=self.lb)
         plt.xlabel('Talent')
-        plt.ylim(top=(20), bottom=final_pos[self.iter_n].min())
+        plt.ylim(top=final_pos.max(), bottom=final_pos.min())
         plt.ylabel('Position')
         plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
         plt.savefig('final_distribution')
         plt.show()
+
+        # print(final_pos)
 
         return result, successful
