@@ -86,18 +86,28 @@ class tvl():
 
         successful = final_pos[final_pos >= 0]
 
-        succesful_index = np.argwhere(final_pos >= 0)
+        # succesful_index = np.argwhere(final_pos >= 0)
 
-        succesful_talent = [self.talent[index[0]] for index in succesful_index]
+        # succesful_talent = [self.talent[index[0]] for index in succesful_index]
         # plt.bar()
-        plt.bar(x=succesful_talent, height=successful)
-        plt.title('Successful individuals')
-        plt.xlim(right=self.ub * 1.1, left=self.lb)
+        # plt.bar(x=succesful_talent, height=successful)
+        # plt.title('Successful individuals')
+        # plt.xlim(right=self.ub, left=self.lb)
+        # plt.xlabel('Talent')
+        # plt.ylim(top=(successful.max() * 1.1), bottom=successful.min())
+        # plt.ylabel('Position')
+        # plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
+        # plt.savefig('successful_individuals')
+        # plt.show()
+
+        plt.bar(x=self.talent, height=final_pos[self.iter_n])
+        plt.title('Final distribution')
+        plt.xlim(right=self.ub, left=self.lb)
         plt.xlabel('Talent')
-        plt.ylim(top=(successful.max() * 1.1), bottom=successful.min())
+        plt.ylim(top=(20), bottom=final_pos[self.iter_n].min())
         plt.ylabel('Position')
         plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
-        plt.savefig('successful_individuals')
+        plt.savefig('final_distribution')
         plt.show()
 
         return result, successful

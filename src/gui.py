@@ -16,14 +16,19 @@ root.geometry("500x300")
 
 def simulate():
     struct = tvl_struct()
+
     struct.iteration_number = int(
         iteration_number.get() or tvl_struct.iteration_number)
+
     struct.population_number = int(
         population_number.get() or tvl_struct.population_number)
+
     struct.talent_lower_bound = float(
         talent_lower_bound.get() or tvl_struct.talent_lower_bound)
+
     struct.talent_upper_bound = float(
         talent_upper_bound.get() or tvl_struct.talent_upper_bound)
+
     struct.talent_avg = float(talent_avg.get() or tvl_struct.talent_avg)
     struct.talent_std = float(talent_std.get() or tvl_struct.talent_std)
     struct.le = float(le.get() or tvl_struct.le)
@@ -65,7 +70,7 @@ talent_avg = customtkinter.CTkEntry(
 talent_avg.pack(pady=12, padx=10)
 
 talent_std = customtkinter.CTkEntry(
-    master=frame, placeholder_text='Average talent value')
+    master=frame, placeholder_text='Talent standard deviation')
 talent_std.pack(pady=12, padx=10)
 
 runs = customtkinter.CTkEntry(
