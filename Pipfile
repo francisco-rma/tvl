@@ -10,7 +10,6 @@ matplotlib = "*"
 scikit-learn = "*"
 line-profiler = "*"
 memory-profiler = "*"
-flask = "*"
 ipympl = "*"
 pillow = "*"
 customtkinter = "*"
@@ -21,4 +20,4 @@ ipykernel = "*"
 flake8 = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.10"
