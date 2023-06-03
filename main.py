@@ -47,7 +47,8 @@ plt.savefig('successful_individuals')
 plt.show()
 
 print('\nMean position of successful individuals: ', np.mean(successful[:, 1]))
-print('Mean capital of successful individuals: ', np.mean(f.mapToCapital(successful[:, 1])))
+print('Mean capital of successful individuals: ',
+      np.mean(f.mapToCapital(successful[:, 1])))
 print('Mean talent of successful individuals: ', np.mean(successful[:, 0]))
 
 plt.clf()
