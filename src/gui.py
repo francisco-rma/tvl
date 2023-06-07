@@ -1,17 +1,20 @@
 import tkinter as tk
 import customtkinter
 import numpy as np
-from matplotlib import pyplot as plt
+from matplotlib import container, pyplot as plt
 from matplotlib import animation as an
 
 from structs.tvl_struct import tvl_struct
 from tvl import tvl
 
+safe: bool = False
+destroy_hook: bool = False
+
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
 
 root = customtkinter.CTk()
-root.geometry("500x300")
+root.geometry("800x400")
 
 
 def simulate():
@@ -39,57 +42,75 @@ def simulate():
     sim.run()
 
 
+def on_closing():
+    print("goodbye")
+    global destroy_hook
+    destroy_hook = True
+
+
 frame = customtkinter.CTkFrame(master=root)
-frame.pack(pady=20, padx=50, fill="both", expand=True)
+# root.protocol("WM_DELETE_WINDOW", on_closing())
+# frame.grid(row=0, column=0, pady=20, padx=50, fill="both", expand=True)
+frame.grid(row=0, column=0, pady=20, padx=50)
+
+columns = range(0, 7)
+rows = range(0, 3)
+
+for value in columns:
+    frame.columnconfigure(index=value, weight=1)
+
+for value in rows:
+    frame.rowconfigure(value, weight=1)
+
 
 button = customtkinter.CTkButton(
     master=frame, text='TvL - Single run', command=simulate)
-button.pack(pady=12, padx=10)
+button.grid(row=1, column=2, pady=12, padx=10)
 
 label = customtkinter.CTkLabel(master=frame, text="Talent vs Luck Simulator")
-label.pack(pady=12, padx=10)
+label.grid(row=0, column=3, pady=12, padx=10)
 
 iteration_number = customtkinter.CTkEntry(
     master=frame, placeholder_text='Number of iterations')
-iteration_number.pack(pady=12, padx=10)
+iteration_number.grid(row=0, column=0, pady=12, padx=10)
 
 population_number = customtkinter.CTkEntry(
     master=frame, placeholder_text='Size of the population')
-population_number.pack(pady=12, padx=10)
+population_number.grid(row=0, column=1, pady=12, padx=10)
 
 talent_lower_bound = customtkinter.CTkEntry(
     master=frame, placeholder_text='Talent lower bound')
-talent_lower_bound.pack(pady=12, padx=10)
+talent_lower_bound.grid(row=1, column=0, pady=12, padx=10)
 
 talent_upper_bound = customtkinter.CTkEntry(
     master=frame, placeholder_text='Talent upper bound')
-talent_upper_bound.pack(pady=12, padx=10)
+talent_upper_bound.grid(row=1, column=1, pady=12, padx=10)
 
 talent_avg = customtkinter.CTkEntry(
     master=frame, placeholder_text='Average talent value')
-talent_avg.pack(pady=12, padx=10)
+talent_avg.grid(row=0, column=2, pady=12, padx=10)
 
 talent_std = customtkinter.CTkEntry(
     master=frame, placeholder_text='Talent standard deviation')
-talent_std.pack(pady=12, padx=10)
+talent_std.grid(row=2, column=0, pady=12, padx=10)
 
 runs = customtkinter.CTkEntry(
     master=frame, placeholder_text='Number of runs')
-runs.pack(pady=12, padx=10)
+runs.grid(row=2, column=1, pady=12, padx=10)
 
 
 le = customtkinter.CTkEntry(
     master=frame, placeholder_text='Probability of lucky event')
-le.pack(pady=12, padx=10)
+le.grid(row=3, column=0, pady=12, padx=10)
 
 
 ue = customtkinter.CTkEntry(
     master=frame, placeholder_text='Probability of unlucky event')
-ue.pack(pady=12, padx=10)
+ue.grid(row=3, column=1, pady=12, padx=10)
 
 ne = customtkinter.CTkEntry(
     master=frame, placeholder_text='Probability of no events')
-ne.pack(pady=12, padx=10)
+ne.grid(row=3, column=2, pady=12, padx=10)
 
 root.mainloop()
 

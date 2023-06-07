@@ -102,7 +102,7 @@ class tvl():
 
         # plt.plot(self.talent, final_pos)
         # plt.bar(x=self.talent, height=final_pos, width=0.01)
-        plt.scatter(x=self.talent, y=final_pos)
+        plt.scatter(x=self.talent, y=final_pos, s=4)
         plt.title('Final distribution')
         plt.xlim(right=self.ub, left=self.lb)
         plt.xlabel('Talent')
@@ -110,8 +110,19 @@ class tvl():
         plt.ylabel('Position')
         plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
         plt.savefig('final_distribution')
+        plt.cla()
+
+        plt.hist(final_pos, bins=50)
+        plt.title('Histogram of final distribution')
+        plt.xlim(right=final_pos.max(), left=final_pos.min())
+        plt.xlabel('Position')
+        # plt.ylim(top=final_pos.max(), bottom=final_pos.min())
+        plt.ylabel('Number of individuals')
+        plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
+        plt.savefig('final_distribution_histogram')
         plt.show()
 
-        # print(final_pos)
+        for i in final_pos:
+            print(i)
 
         return result, successful
