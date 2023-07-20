@@ -4,7 +4,7 @@ class tvl_struct():
     def __init__(self) -> None:
         pass
 
-    iteration_number: int = 80
+    iteration_number: int = 200
 
     population_number: int = 1000
 

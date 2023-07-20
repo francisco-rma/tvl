@@ -102,24 +102,36 @@ class tvl():
 
         # plt.plot(self.talent, final_pos)
         # plt.bar(x=self.talent, height=final_pos, width=0.01)
-        plt.scatter(x=self.talent, y=final_pos, s=4)
-        plt.title('Final distribution')
-        plt.xlim(right=self.ub, left=self.lb)
-        plt.xlabel('Talent')
-        plt.ylim(top=final_pos.max(), bottom=final_pos.min())
-        plt.ylabel('Position')
-        plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
-        plt.savefig('final_distribution')
-        plt.cla()
 
-        plt.hist(final_pos, bins=50)
-        plt.title('Histogram of final distribution')
-        plt.xlim(right=final_pos.max(), left=final_pos.min())
-        plt.xlabel('Position')
-        # plt.ylim(top=final_pos.max(), bottom=final_pos.min())
-        plt.ylabel('Number of individuals')
-        plt.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
-        plt.savefig('final_distribution_histogram')
+        fig = plt.figure(layout='constrained', figsize=(10, 10))
+        fig.set_figheight(6)
+        fig.set_figwidth(14)
+
+        ax1 = fig.add_subplot(121)
+        ax2 = fig.add_subplot(122)
+
+        # scatter plot
+        ax1.set_xlim(right=self.ub, left=self.lb)
+        ax1.set_ylim(top=final_pos.max(), bottom=final_pos.min())
+        ax1.set_title('Final distribution')
+        ax1.set_xlabel('Talent')
+        ax1.set_ylabel('Position')
+        ax1.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
+
+        # ax1.legend(['average position: ' + str(final_pos.mean())],
+        #            loc='upper left')
+
+        ax1.scatter(self.talent, final_pos, s=4)
+
+        # histogram
+        ax2.set_xlim(right=final_pos.max(), left=final_pos.min())
+        ax2.set_title('Histogram of final distribution')
+        ax2.set_xlabel('Position')
+        ax2.set_ylabel('Number of individuals')
+        ax2.legend(['Iterations: ' + str(self.iter_n)], loc='upper left')
+
+        ax2.hist(final_pos, bins=50)
+
         plt.show()
 
         for i in final_pos:
