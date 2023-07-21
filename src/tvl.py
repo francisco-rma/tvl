@@ -115,7 +115,7 @@ class tvl():
             color='white', label=f'Standard deviation: {np.round(final_pos.std(), decimals=2)}')
         ax1.legend(handles=[patch_mean, patch_std])
 
-        ax1.scatter(self.talent, final_pos, s=4, c=final_pos)
+        ax1.scatter(self.talent, final_pos, s=4, c=final_pos, cmap='viridis')
 
         # ax1.scatter(self.talent, final_pos, s=4, cmap="cmap_name_r")
 
