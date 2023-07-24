@@ -1,6 +1,8 @@
+from ast import Num
 from signal import default_int_handler
 
-import matplotlib
+from traitlets import Int
+
 import functions.core as f
 from matplotlib import pyplot as plt
 from matplotlib import animation as an
@@ -76,7 +78,7 @@ class tvl():
         self.talent, self.talent_index = f.populate(
             self.pop_n, self.lb, self.ub, self.mu, self.std)
 
-    def run(self):
+    def run(self, many=False):
 
         # Running the simulations:
         result = f.evolution(
@@ -84,7 +86,10 @@ class tvl():
             time=self.iter_n,
             unlucky_event=self.ue,
             lucky_event=self.le,
-            history=True)
+            history=(not many))
+
+        if many:
+            return result
 
         final_pos = result[:, self.iter_n - 1]
 
@@ -92,14 +97,16 @@ class tvl():
 
         succesful_index = np.argwhere(final_pos >= 0)
 
-        succesful_talent = [self.talent[index[0]] for index in succesful_index]
+        # succesful_talent = [self.talent[index[0]] for index in succesful_index]
+        succesful_talent = self.talent[succesful_index]
+        print(succesful_talent)
 
         fig = plt.figure(layout='constrained', figsize=(10, 10))
         fig.set_figheight(6)
         fig.set_figwidth(14)
 
-        ax1 = fig.add_subplot(121)
-        ax2 = fig.add_subplot(122)
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax2 = fig.add_subplot(1, 2, 2)
 
         # scatter plot
         ax1.set_xlim(right=self.ub, left=self.lb)
@@ -113,7 +120,11 @@ class tvl():
 
         patch_std = mpatches.Patch(
             color='white', label=f'Standard deviation: {np.round(final_pos.std(), decimals=2)}')
-        ax1.legend(handles=[patch_mean, patch_std])
+
+        patch_iter_n = mpatches.Patch(
+            color='white', label=f'Iterations: {self.iter_n}')
+
+        ax1.legend(handles=[patch_mean, patch_std, patch_iter_n])
 
         ax1.scatter(self.talent, final_pos, s=4, c=final_pos, cmap='viridis')
 
@@ -135,3 +146,6 @@ class tvl():
         plt.show()
 
         return result, successful
+
+    def set_iter_n(self, number: Int):
+        self.iter_n = number

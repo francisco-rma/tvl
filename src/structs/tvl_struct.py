@@ -18,6 +18,6 @@ class tvl_struct():
 
     runs: int = 100
 
-    le: float = 0.25
+    le: float = 0.5
 
-    ue: float = 0.25
+    ue: float = 0.5
