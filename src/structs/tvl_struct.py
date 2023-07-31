@@ -6,7 +6,7 @@ class tvl_struct():
 
     iteration_number: int = 200
 
-    population_number: int = 1000
+    population_number: int = 10000
 
     talent_lower_bound: float = 0
 

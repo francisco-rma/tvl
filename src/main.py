@@ -21,14 +21,14 @@ def main():
 
     # sim.run()
 
-    end = 10
+    end = 100
 
     fig = plt.figure(layout='constrained', figsize=(10, 10))
     fig.set_figheight(6)
     fig.set_figwidth(14)
     fig.suptitle('Talent histogram of succesful individuals')
 
-    plots = [200, 500, 800, 1000]
+    plots = [80, 200, 500, 800, 1100]
 
     start = time.time()
 
@@ -40,22 +40,25 @@ def main():
 
             sim.set_iter_n(iterations)
             sample[i] = sim.run(many=True)
+
+            successes = len(np.argwhere(sample[i] > 0))
+
             test = np.ravel(sim.talent[np.argwhere(sample[i] > 0)])
             successful.extend(test)
-            print(f'{i}, iterations: {sim.iter_n}')
+            print(f'{i}, iterations: {sim.iter_n}, successes: {successes}')
             i += 1
 
         ax = fig.add_subplot(int(f'{ceil(len(plots)/2)}{2}{plot_index + 1}'))
         ax.set_xlim(right=1, left=0)
-        # ax.set_title('Talent histogram of succesful individuals')
         ax.set_xlabel('Talent')
         ax.set_ylabel('Number of successes')
 
-        patch_iter_n = mpatches.Patch(
-            color='white', label=f'Iterations: {sim.iter_n}')
+        if len(successful) > 0:
+            patch_iter_n = mpatches.Patch(
+                color='white', label=f'Iterations: {sim.iter_n}')
 
-        patch_avg = mpatches.Patch(
-            color='white', label=f'Average talent: {np.round(np.mean(successful), 2)}')
+            patch_avg = mpatches.Patch(
+                color='white', label=f'Average talent: {np.round(np.mean(successful), 2)}')
 
         ax.legend(handles=[patch_iter_n, patch_avg])
 
@@ -66,26 +69,25 @@ def main():
 
         ax.set_xticks(ticks)
 
-    end = time.time()
+    end_time = time.time()
 
-    duration = end - start
+    duration = end_time - start
 
     print(f'Elapsed time: {duration} seconds')
 
-    # metadata = sim.generate_metadata()
     figname = 'tvl'
     fig.savefig(fname=figname)
 
-    create_metadata(figname, simuation_instance=sim)
+    create_metadata(figname, simuation_instance=sim, runs=end)
 
     plt.show()
 
 
-def create_metadata(name, simuation_instance):
+def create_metadata(name, simuation_instance, runs):
     targetImage = Image.open(f'{name}.png')
 
     metadata = PngInfo()
-    metadata.add_text('runs', str(simuation_instance.iter_n))
+    metadata.add_text('runs', str(runs))
     metadata.add_text('population_size', str(simuation_instance.pop_n))
     metadata.add_text('talent_lower_bound', str(simuation_instance.lb))
     metadata.add_text('talent_upper_bound', str(simuation_instance.ub))
