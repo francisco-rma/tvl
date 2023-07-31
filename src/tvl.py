@@ -149,3 +149,14 @@ class tvl():
 
     def set_iter_n(self, number: Int):
         self.iter_n = number
+
+    def generate_metadata(self):
+        metadata = {}
+        metadata['runs'] = self.iter_n
+        metadata['population_size'] = self.pop_n
+        metadata['talent_lower_bound'] = self.lb
+        metadata['talent_upper_bound'] = self.ub
+        metadata['talent_mean'] = self.mu
+        metadata['talent_standard_deviation'] = self.std
+        metadata['lucky_event'] = self.le
+        metadata['unlucky_event'] = self.ue
