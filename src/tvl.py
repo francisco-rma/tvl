@@ -1,8 +1,3 @@
-from ast import Num
-from signal import default_int_handler
-
-from traitlets import Int
-
 import functions.core as f
 from matplotlib import pyplot as plt
 from matplotlib import animation as an
@@ -147,7 +142,7 @@ class tvl():
 
         return result, successful
 
-    def set_iter_n(self, number: Int):
+    def set_iter_n(self, number: int):
         self.iter_n = number
 
     def generate_metadata(self):
