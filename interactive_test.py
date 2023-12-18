@@ -26,8 +26,8 @@ le = 0.25
 # ue: chance for an individual to go through an unlucky event
 ue = 0.25
 
-talent, talent_index = f.populate(pop_n, lb, ub, mu, std)
+talent = f.interactive_populate(pop_n, lb, ub, mu, std)
 
-pos = f.interactive_tvl(talent, iter_n, ue, le, True)
+pos = f.interactive_tvl(talent, iter_n, ue, le, False)
 
 print(pos)

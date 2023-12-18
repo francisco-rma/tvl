@@ -44,37 +44,38 @@ def login():
     mst, msp, successful = tvl.many_runs(talent, iter_n, ue, le, runs)
 
     # msc: Most Successful Capital (final capital of the most succesful individual)
-    msc = tvl.mapToCapital(msp)
+    msc = tvl.map_to_capital(msp)
 
     # print(np.column_stack([msc, msp]))
 
     plt.hist(successful[:, 0], bins=100, range=(0, 1))
-    plt.title('Histogram of the talent of successful individuals')
-    plt.xlabel('Talent')
-    plt.ylabel('Number of occurences')
-    plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
-    plt.savefig('successful_individuals')
+    plt.title("Histogram of the talent of successful individuals")
+    plt.xlabel("Talent")
+    plt.ylabel("Number of occurences")
+    plt.legend(["Iterations: " + str(iter_n)], loc="upper left")
+    plt.savefig("successful_individuals")
     plt.show()
 
-    print('\nMean position of successful individuals: ',
-          np.mean(successful[:, 1]))
-    print('Mean capital of successful individuals: ',
-          np.mean(tvl.mapToCapital(successful[:, 1])))
-    print('Mean talent of successful individuals: ', np.mean(successful[:, 0]))
+    print("\nMean position of successful individuals: ", np.mean(successful[:, 1]))
+    print(
+        "Mean capital of successful individuals: ",
+        np.mean(tvl.map_to_capital(successful[:, 1])),
+    )
+    print("Mean talent of successful individuals: ", np.mean(successful[:, 0]))
 
     plt.clf()
 
     plt.hist(mst, bins=100, range=(0, 1))
-    plt.title('Histogram of the talent of the most successful individual')
-    plt.xlabel('Talent')
-    plt.ylabel('Number of occurences')
-    plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
-    plt.savefig('mst')
+    plt.title("Histogram of the talent of the most successful individual")
+    plt.xlabel("Talent")
+    plt.ylabel("Number of occurences")
+    plt.legend(["Iterations: " + str(iter_n)], loc="upper left")
+    plt.savefig("mst")
     plt.show()
 
-    print('\nMean maximum position: ', np.mean(msp))
-    print('Mean maximum capital: ', np.mean(msc))
-    print('Mean associated talent: ', np.mean(mst))
+    print("\nMean maximum position: ", np.mean(msp))
+    print("Mean maximum capital: ", np.mean(msc))
+    print("Mean associated talent: ", np.mean(mst))
 
 
 frame = customtkinter.CTkFrame(master=root)
@@ -83,16 +84,14 @@ frame.pack(pady=20, padx=50, fill="both", expand=True)
 label = customtkinter.CTkLabel(master=frame, text="Hello World")
 label.pack(pady=12, padx=10)
 
-entry1 = customtkinter.CTkEntry(master=frame, placeholder_text='Username')
+entry1 = customtkinter.CTkEntry(master=frame, placeholder_text="Username")
 entry1.pack(pady=12, padx=10)
 
-entry2 = customtkinter.CTkEntry(
-    master=frame, placeholder_text='Password', show='*')
+entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*")
 entry2.pack(pady=12, padx=10)
 
 
-button = customtkinter.CTkButton(
-    master=frame, text='TvL - Many runs', command=login)
+button = customtkinter.CTkButton(master=frame, text="TvL - Many runs", command=login)
 button.pack(pady=12, padx=10)
 
 

@@ -9,7 +9,7 @@ side = 4
 grid = np.zeros((side, side))
 listNeighbour = np.empty((side**2, 4))
 
-f.list_neighbours(grid, listNeighbour, periodic_conditions=True)
+listNeighbour = f.list_neighbours(grid, listNeighbour, periodic_conditions=True)
 
 grid = np.vander([1, 2, 3, 4], increasing=True)
 

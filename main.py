@@ -34,33 +34,35 @@ talent, talent_index = f.populate(pop_n, lb, ub, mu, std)
 mst, msp, successful = f.many_runs(talent, iter_n, ue, le, runs)
 
 # msc: Most Successful Capital (final capital of the most succesful individual)
-msc = f.mapToCapital(msp)
+msc = f.map_to_capital(msp)
 
 # print(np.column_stack([msc, msp]))
 
 plt.hist(successful[:, 0], bins=100, range=(0, 1))
-plt.title('Histogram of the talent of successful individuals')
-plt.xlabel('Talent')
-plt.ylabel('Number of occurences')
-plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
-plt.savefig('successful_individuals')
+plt.title("Histogram of the talent of successful individuals")
+plt.xlabel("Talent")
+plt.ylabel("Number of occurences")
+plt.legend(["Iterations: " + str(iter_n)], loc="upper left")
+plt.savefig("successful_individuals")
 plt.show()
 
-print('\nMean position of successful individuals: ', np.mean(successful[:, 1]))
-print('Mean capital of successful individuals: ',
-      np.mean(f.mapToCapital(successful[:, 1])))
-print('Mean talent of successful individuals: ', np.mean(successful[:, 0]))
+print("\nMean position of successful individuals: ", np.mean(successful[:, 1]))
+print(
+    "Mean capital of successful individuals: ",
+    np.mean(f.map_to_capital(successful[:, 1])),
+)
+print("Mean talent of successful individuals: ", np.mean(successful[:, 0]))
 
 plt.clf()
 
 plt.hist(mst, bins=100, range=(0, 1))
-plt.title('Histogram of the talent of the most successful individual')
-plt.xlabel('Talent')
-plt.ylabel('Number of occurences')
-plt.legend(['Iterations: ' + str(iter_n)], loc='upper left')
-plt.savefig('mst')
+plt.title("Histogram of the talent of the most successful individual")
+plt.xlabel("Talent")
+plt.ylabel("Number of occurences")
+plt.legend(["Iterations: " + str(iter_n)], loc="upper left")
+plt.savefig("mst")
 plt.show()
 
-print('\nMean maximum position: ', np.mean(msp))
-print('Mean maximum capital: ', np.mean(msc))
-print('Mean associated talent: ', np.mean(mst))
+print("\nMean maximum position: ", np.mean(msp))
+print("Mean maximum capital: ", np.mean(msc))
+print("Mean associated talent: ", np.mean(mst))
