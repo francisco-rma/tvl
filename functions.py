@@ -1,7 +1,7 @@
-import scipy.stats as stats
 import numpy as np
-from numpy.random import default_rng
 import pandas as pd
+from numpy.random import default_rng
+from scipy import stats
 
 
 def populate(size: int, lower_bound, upper_bound, mean: float, std: float):

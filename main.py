@@ -30,6 +30,21 @@ runs = 100
 
 talent, talent_index = f.populate(pop_n, lb, ub, mu, std)
 
+
+# plt.hist(talent)
+def calculate_expected_value(talent: float):
+    return (talent * le - ue) * iter_n
+
+
+vfunc = np.vectorize(calculate_expected_value)
+result = f.tvl(talent=talent, time=iter_n, unlucky_event=ue, lucky_event=le)
+expected_result = vfunc(talent)
+print((result, expected_result))
+plt.scatter(talent, result)
+plt.scatter(talent, expected_result)
+plt.show()
+exit()
+
 # Running the simulations:
 mst, msp, successful = f.many_runs(talent, iter_n, ue, le, runs)
 

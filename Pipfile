@@ -13,6 +13,7 @@ memory-profiler = "*"
 ipympl = "*"
 pillow = "*"
 customtkinter = "*"
+scipy = "*"
 
 [dev-packages]
 pylint = "*"
