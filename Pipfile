@@ -5,19 +5,15 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-pandas = "*"
-matplotlib = "*"
 scikit-learn = "*"
 line-profiler = "*"
-memory-profiler = "*"
-ipympl = "*"
-pillow = "*"
-customtkinter = "*"
 
 [dev-packages]
-pylint = "*"
+ipympl = "*"
+memory-profiler = "*"
+matplotlib = "*"
+pandas = "*"
 ipykernel = "*"
-flake8 = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3"

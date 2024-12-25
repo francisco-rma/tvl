@@ -1,7 +1,10 @@
+from time import perf_counter, time
 import functions as f
 from matplotlib import pyplot as plt
 from matplotlib import animation as an
 import numpy as np
+
+start = perf_counter()
 
 np.set_printoptions(precision=3)
 
@@ -37,6 +40,8 @@ mst, msp, successful = f.many_runs(talent, iter_n, ue, le, runs)
 msc = f.map_to_capital(msp)
 
 # print(np.column_stack([msc, msp]))
+
+print(f"Done simulating in {(perf_counter() - start)} seconds")
 
 plt.hist(successful[:, 0], bins=100, range=(0, 1))
 plt.title("Histogram of the talent of successful individuals")

@@ -1,16 +1,15 @@
+from time import perf_counter
 import functions as f
-from matplotlib import pyplot as plt
-from matplotlib import animation as an
 import numpy as np
-import pandas as pd
+
 
 np.set_printoptions(precision=3)
 
 # iter_n: number of iterations to go through
-iter_n = 10
+iter_n = 500
 
-# pop_n: number of individuals in the popoulation
-pop_n = 2**2
+# size: size of population matrix. Total population will be size^2
+size = 4
 
 # lb: lower bound of talent
 # ub: upper bound of talent
@@ -26,8 +25,8 @@ le = 0.25
 # ue: chance for an individual to go through an unlucky event
 ue = 0.25
 
-talent = f.interactive_populate(pop_n, lb, ub, mu, std)
+talent = f.interactive_populate(size, lb, ub, mu, std)
+
+print(talent.shape)
 
 pos = f.interactive_tvl(talent, iter_n, ue, le, False)
-
-print(pos)

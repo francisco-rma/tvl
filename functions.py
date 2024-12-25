@@ -1,7 +1,10 @@
+from scipy import ndimage
 import scipy.stats as stats
 import numpy as np
 from numpy.random import default_rng
 import pandas as pd
+
+NORM_FACTOR = float(1 / 4)
 
 
 def populate(size: int, lower_bound, upper_bound, mean: float, std: float):
@@ -53,6 +56,7 @@ def interactive_populate(size: int, lower_bound, upper_bound, mean: float, std: 
 
     talent = np.zeros((size, size))
 
+    # Deliberate talent bias for testing
     for i in range(size):
         talent[i, :] = stats.truncnorm.rvs(
             (lower_bound - mean) / std,
@@ -61,6 +65,29 @@ def interactive_populate(size: int, lower_bound, upper_bound, mean: float, std: 
             scale=std,
             size=(size),
         )
+
+    # An unbiased solution should look like:
+    # unbiased_talent = stats.truncnorm.rvs(
+    #     (lower_bound - mean) / std,
+    #     (upper_bound - mean) / std,
+    #     loc=mean,
+    #     scale=std,
+    #     size=(size**2),
+    # )
+
+    # populated: set[tuple] = set()
+    # for value in unbiased_talent:
+    #     i, j = rng.integers(low=0, high=len(talent)), rng.integers(
+    #         low=0, high=len(talent)
+    #     )
+
+    #     while (i, j) in populated:
+    #         i, j = rng.integers(low=0, high=len(talent)), rng.integers(
+    #             low=0, high=len(talent)
+    #         )
+
+    #     talent[i, j] = value
+    #     populated.add((i, j))
 
     return talent
 
@@ -191,115 +218,46 @@ def interactive_tvl(
             -pos: 3d array containing the positions at each time for each individual
 
     """
+    assert talent.shape[0] == talent.shape[1]
 
     rng = default_rng()
 
-    if not history:
-        # Returns a 2d array where:
-        # The i-th row represent the time evolution of the i-th individual's position
-        # The j-th column represents the population's position at the j-th iteration
-        # The element (i, j) represents the position of the i-th individual at the j-th iteration
+    iter = 0
+    arr_source = np.zeros(talent.shape)
+    colors = np.zeros(talent.shape)
+    color_map = {0: "\033[91m", 1: "\033[92m", 2: "\033[94m"}  # Red  # Green  # Blue
 
-        pos = np.zeros(talent.shape)
+    a = rng.uniform(0.0, 1.0, size=(time, talent.shape[0], talent.shape[1]))
+    b = rng.uniform(0.0, 1.0, size=(time, talent.shape[0], talent.shape[1]))
 
-        a = rng.uniform(0.0, 1.0, size=talent.shape)
-        b = rng.uniform(0.0, 1.0, size=talent.shape)
+    while iter < time:
+        neighbours_avg = neighbour_avg(arr_source)
+        # Creating logical masks for each scenario:
 
-        def negative_event_test(i, j):
-            value = a[int(i), int(j)]
-            return value <= unlucky_event
+        # Scenario 1: unlucky event
+        negative_event_mask = (a[iter] <= unlucky_event) & (
+            arr_source >= neighbours_avg
+        )
 
-        def positive_event_test(i, j):
-            event_sample = a[int(i), int(j)]
-            capitalization_sample = b[int(i), int(j)]
-            rv = (
-                event_sample > unlucky_event
-                and event_sample <= unlucky_event + lucky_event
-                and capitalization_sample < talent[int(i), int(j)]
-            )
-            return rv
+        # Scenario 2: lucky event AND capitalized
+        positive_event_mask = (
+            (a[iter] > unlucky_event)
+            & (a[iter] <= unlucky_event + lucky_event)
+            & (b[iter] <= talent)
+        )
 
-        ne_test = np.vectorize(negative_event_test)
-        pe_test = np.vectorize(positive_event_test)
+        # Scenario 3*: no events OR lucky event AND failed to capitalize
+        # * no mask needed because no operations are made
 
-        for i in range(time - 1):
-            # a = np.fromfunction(lambda i, j: rng.uniform(0.0, 1.0), shape=talent.shape)
-            # b = np.fromfunction(lambda i, j: rng.uniform(0.0, 1.0), shape=talent.shape)
-            a = rng.uniform(0.0, 1.0, size=talent.shape)
-            b = rng.uniform(0.0, 1.0, size=talent.shape)
+        # Upadting position of those in scenario 1:
+        arr_source[negative_event_mask] = arr_source[negative_event_mask] - 1
 
-            print(a)
-            print(b)
+        # Upadting position of those in scenario 2:
+        arr_source[positive_event_mask] = arr_source[positive_event_mask] + 1
 
-            # Creating logical masks for each scenario:
+        iter += 1
 
-            # Scenario 1: unlucky event
-            negative_event_mask = a < unlucky_event
-            negative_event_mask_test = np.fromfunction(ne_test, talent.shape)
-
-            print(negative_event_mask == negative_event_mask_test)
-
-            # Scenario 2: lucky event AND capitalized
-            positive_event_mask = (
-                (a > unlucky_event) & (a <= unlucky_event + lucky_event) & (b <= talent)
-            )
-            positive_event_mask_test = np.fromfunction(pe_test, talent.shape)
-
-            print(positive_event_mask == positive_event_mask_test)
-
-            # Scenario 3: (no events) OR
-            # (lucky event AND failed to capitalize)
-            # neutral_event_mask = (a > unlucky_event + lucky_event) | (
-            #     (a > unlucky_event) & (a <= unlucky_event + lucky_event) & (b > talent)
-            # )
-
-            # Upadting position of those in scenario 1:
-            pos[negative_event_mask] = pos[negative_event_mask] - 1
-
-            # Upadting position of those in scenario 2:
-            pos[positive_event_mask] = pos[positive_event_mask] + 1
-
-            # Upadting position of those in scenario 3:
-            # pos[neutral_event_mask, i + 1] = pos[neutral_event_mask]
-
-        return pos
-
-    else:
-        # Default behavior
-        # Returns a 1d array representing the population's final position
-
-        iter = 0
-        arr_source = np.zeros(len(talent))
-
-        while iter < time:
-            a = rng.uniform(0.0, 1.0, size=len(talent))
-            b = rng.uniform(0.0, 1.0, size=len(talent))
-
-            # Creating logical masks for each scenario:
-
-            # Scenario 1: unlucky event
-            negative_event_mask = a <= unlucky_event
-
-            # Scenario 2: lucky event AND capitalized
-            positive_event_mask = (
-                (a > unlucky_event) & (a <= unlucky_event + lucky_event) & (b <= talent)
-            )
-
-            # Scenario 3: no events OR
-            # lucky event AND failed to capitalize
-            # neutral_mask = (a > unlucky_event + lucky_event) | (
-            #     (a > unlucky_event) & (a <= unlucky_event + lucky_event) & (b > talent)
-            # )
-
-            # Upadting position of those in scenario 1:
-            arr_source[negative_event_mask] = arr_source[negative_event_mask] - 1
-
-            # Upadting position of those in scenario 2:
-            arr_source[positive_event_mask] = arr_source[positive_event_mask] + 1
-
-            iter += 1
-
-        return arr_source
+    return arr_source
 
 
 def symmetric_evolution(
@@ -527,6 +485,14 @@ def list_neighbours(
             list_neighbour[index] = neighbours
 
     return list_neighbour
+
+
+def neighbour_avg(values: np.ndarray) -> np.ndarray:
+    assert values.shape[0] == values.shape[1]
+    kernel = np.array(
+        [[0, NORM_FACTOR, 0], [NORM_FACTOR, 0, NORM_FACTOR], [0, NORM_FACTOR, 0]]
+    )
+    return ndimage.convolve(values, kernel, mode="constant")
 
 
 # def interactive_tvl(
