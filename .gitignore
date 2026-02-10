@@ -9,3 +9,4 @@
 *.exe
 *.ipynb
 *.pyc
+pyrightconfig.json
