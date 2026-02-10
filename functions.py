@@ -1,8 +1,7 @@
-from scipy import ndimage
-import scipy.stats as stats
 import numpy as np
+import scipy.stats as stats
 from numpy.random import default_rng
-import pandas as pd
+from scipy import ndimage
 
 NORM_FACTOR = float(1 / 4)
 
